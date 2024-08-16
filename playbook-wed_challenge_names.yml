@@ -1,0 +1,29 @@
+- name: Create new users from wed_challenge_names.yml on planetexpress
+  hosts: planetexpress
+  gather_facts: yes
+  connection: ssh
+  vars_files:
+    - ~/mycode/wed_challenge_names.yml
+
+  tasks:
+    - name: Install figlet using package
+      ansible.builtin.package:
+        name: figlet
+        state: present
+      become: yes
+
+    - name: Create users from the wednesday list
+      ansible.builtin.user:
+        name: "{{ item }}"
+        comment: "For testing purposes"
+        state: present
+        shell: /bin/bash
+      become: yes
+      loop: "{{ wednesday }}"
+
+    - name: Display completion message
+      ansible.builtin.debug:
+        msg: "I've completed the challenge!"
+
+
+
